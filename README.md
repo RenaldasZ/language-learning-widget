@@ -35,12 +35,17 @@ pip install requests
    cd language-learning-widget
    ```
 
-2. **Run the application**:
+2. **Create a `.env` file in the root of the project directory with the following content**:
+
+   ```bash
+   YANDEX_API_KEY=your-api-key-here
+   ```
+   Replace your-api-key-here with a valid API key from the Yandex Dictionary API.
+
+3. **Run the application**:
    ```bash
    python main.py
    ```
-
-3. **API Key**: Ensure you replace the `API_KEY` in the `LanguageLearningWidget` class with a valid API key from Yandex Dictionary API.
 
 ## Usage
 
@@ -55,6 +60,7 @@ language-learning-widget/
 │
 ├── main.py                     # Main application script
 ├── README.md                   # Project documentation
+└── .env                        # Environment variables configuration
 ```
 
 ## Author
