@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 import random
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
 
 class LanguageLearningWidget:
     QUIZ_OPTIONS_COUNT = 4  # Defining magic number as a constant
@@ -10,7 +15,7 @@ class LanguageLearningWidget:
         self.window = root
         self.window.title("Language Learning Widget: English & Lithuanian")
         self.window.geometry("450x800")
-        self.API_KEY = 'Your_api_key' # use Yandex Dictionary Api
+        self.API_KEY = os.getenv('YANDEX_API_KEY') # use Yandex Dictionary Api
         self.WORD_API_URL = 'https://random-word-api.herokuapp.com/word?number=1'
         self.YANDEX_API_URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}"
 
@@ -32,8 +37,8 @@ class LanguageLearningWidget:
         """Initialize all UI components."""
         # Daily word section
         self.create_label("Today's Word", 16, pady=10)
-        self.word_display = self.create_label("", 14, pady=5)
-        self.translation_display = self.create_label("", 12, pady=5)
+        self.word_display = self.create_label("Loading...", 14, pady=5)
+        self.translation_display = self.create_label("Loading...", 12, pady=5)
 
         # Loading label (hidden initially)
         self.loading_label = self.create_label("Loading...", 12, fg="blue", pady=5)
