@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 import random
-import threading  # Import threading
+import threading
 import os
 from dotenv import load_dotenv
 
@@ -110,8 +110,8 @@ class LanguageLearningWidget:
     def _display_daily_word(self):
         """Actual word fetching logic."""
         self.current_word, translation = self.fetch_valid_translation()
-        self.word_display.config(text=f"English: {self.current_word}")
-        self.translation_display.config(text=f"Lithuanian: {translation}")
+        self.window.after(0, lambda: self.word_display.config(text=f"English: {self.current_word}"))
+        self.window.after(0, lambda: self.translation_display.config(text=f"Lithuanian: {translation}"))
         self.show_loading(False)
 
     def show_loading(self, is_loading):
@@ -140,7 +140,7 @@ class LanguageLearningWidget:
     def _translate_word(self, word):
         """Actual word translation logic."""
         translation = self.fetch_translation(word, "en-lt")
-        self.translation_result.config(text=f"Lithuanian: {translation}" if translation else "Translation not found")
+        self.window.after(0, lambda: self.translation_result.config(text=f"Lithuanian: {translation}" if translation else "Translation not found"))
 
     def fetch_valid_translation(self):
         """Fetch a valid word and its translation."""
@@ -155,7 +155,7 @@ class LanguageLearningWidget:
                 # If untranslatable, add to list and update display
                 if word not in self.untranslatable_words:
                     self.untranslatable_words.append(word)
-                    self.untranslatable_words_display.insert('1.0', f"{len(self.untranslatable_words)}. {word}\n")
+                    self.window.after(0, self.untranslatable_words_display.insert('1.0', f"{len(self.untranslatable_words)}. {word}\n"))
                 print(f"Skipping untranslatable word: {word}")
 
     def fetch_random_word(self):
@@ -201,9 +201,9 @@ class LanguageLearningWidget:
         options = self.prepare_quiz_options()
         random.shuffle(options)
 
-        self.question_label.config(text=f"What is the Lithuanian word for '{self.current_word}'?")
+        self.window.after(0, self.question_label.config(text=f"What is the Lithuanian word for '{self.current_word}'?"))
         for i, option in enumerate(options):
-            self.option_buttons[i].config(text=option)
+            self.window.after(0, self.option_buttons[i].config(text=option))
         
         self.show_loading(False)
 
