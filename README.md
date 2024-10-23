@@ -1,4 +1,3 @@
-
 # Language Learning Widget: English & Lithuanian
 
 A simple Tkinter-based application designed to help users learn Lithuanian vocabulary through word translation and quiz-style questions.
@@ -9,6 +8,8 @@ A simple Tkinter-based application designed to help users learn Lithuanian vocab
 - **Translation Tool**: Enter an English word to see its Lithuanian translation.
 - **Quiz Section**: Test your knowledge with multiple-choice questions on Lithuanian translations.
 - **Untranslatable Words Tracker**: Keeps track of words that could not be translated, displayed with a scrollbar.
+- **Threading for UI Responsiveness**: The app now uses threading to fetch words and translations in the background, preventing UI lag.
+- **Score and Incorrect Guess Tracker**: Displays your current score and tracks incorrect guesses in the quiz.
 
 ## Screenshots
 ![](screenshots/1.png)
@@ -20,11 +21,12 @@ A simple Tkinter-based application designed to help users learn Lithuanian vocab
 - Python 3.x
 - Tkinter
 - Requests library
+- Python-dotenv
 
 You can install the required library using:
 
 ```bash
-pip install requests
+pip install requests python-dotenv
 ```
 
 ## Getting Started
@@ -52,6 +54,7 @@ pip install requests
 - On startup, the widget will display today's English word and its translation.
 - Enter any English word in the input box and click "Translate to Lithuanian" to see its translation.
 - Participate in the quiz to test your knowledge by selecting the correct Lithuanian translation from the provided options.
+- If words cannot be translated, they are added to the untranslatable word list.
 
 ## Project Structure
 
@@ -63,6 +66,7 @@ language-learning-widget/
 └── .env                        # Environment variables configuration
 ```
 
+
 ## Author
 
 Renaldas  
@@ -71,3 +75,8 @@ Renaldas
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Changes:
+- Added information about threading for UI responsiveness.
+- Updated the "Features" section to include the new score tracker and threading functionality.
+- Added `python-dotenv` to the requirements.
