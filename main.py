@@ -112,7 +112,6 @@ class LanguageLearningWidget:
         self.current_word, translation = self.fetch_valid_translation()
         self.window.after(0, lambda: self.word_display.config(text=f"English: {self.current_word}"))
         self.window.after(0, lambda: self.translation_display.config(text=f"Lithuanian: {translation}"))
-        self.show_loading(False)
 
     def show_loading(self, is_loading):
         """Show or hide the loading message."""
@@ -230,7 +229,7 @@ class LanguageLearningWidget:
             self.incorrect_guesses_label.config(text=f"Incorrect: {self.incorrect_guesses}")
 
         # Show next question after a short delay
-        self.window.after(2000, self.next_quiz_question)
+        self.window.after(0, self.next_quiz_question)
 
 if __name__ == "__main__":
     root = tk.Tk()
