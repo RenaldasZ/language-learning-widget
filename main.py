@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 import random
+import threading  # Import threading
 import os
 from dotenv import load_dotenv
 
@@ -15,7 +16,7 @@ class LanguageLearningWidget:
         self.window = root
         self.window.title("Language Learning Widget: English & Lithuanian")
         self.window.geometry("450x800")
-        self.API_KEY = os.getenv('YANDEX_API_KEY') # use Yandex Dictionary Api
+        self.API_KEY = os.getenv('YANDEX_API_KEY')  # Use Yandex Dictionary Api
         self.WORD_API_URL = 'https://random-word-api.vercel.app/api?words=1'
         self.YANDEX_API_URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}"
 
@@ -102,40 +103,44 @@ class LanguageLearningWidget:
         return button
 
     def display_daily_word(self):
-        """Show loading message and fetch today's word and its translation."""
-        self.show_loading(True)  # Show loading indicator
-        self.window.after(100, self._display_daily_word)  # Allow UI update before fetching
+        """Fetch today's word and its translation in the background."""
+        self.show_loading(True)
+        threading.Thread(target=self._display_daily_word).start()
 
     def _display_daily_word(self):
-        """Actual word fetching with loading display."""
+        """Actual word fetching logic."""
         self.current_word, translation = self.fetch_valid_translation()
         self.word_display.config(text=f"English: {self.current_word}")
         self.translation_display.config(text=f"Lithuanian: {translation}")
-        self.show_loading(False)  # Hide loading indicator
+        self.show_loading(False)
 
     def show_loading(self, is_loading):
         """Show or hide the loading message."""
         if is_loading:
-            self.loading_label.pack()  # Show the loading message
+            self.loading_label.pack()
             self.word_entry.config(state=tk.DISABLED)
             self.translate_button.config(state=tk.DISABLED)
             for button in self.option_buttons:
                 button.config(state=tk.DISABLED)
         else:
-            self.loading_label.pack_forget()  # Hide the loading message
+            self.loading_label.pack_forget()
             self.word_entry.config(state=tk.NORMAL)
             self.translate_button.config(state=tk.NORMAL)
             for button in self.option_buttons:
                 button.config(state=tk.NORMAL)
 
     def translate_word(self):
-        """Translate a word entered by the user."""
+        """Translate a word entered by the user in the background."""
         word = self.word_entry.get().strip()
         if word:
-            translation = self.fetch_translation(word, "en-lt")
-            self.translation_result.config(text=f"Lithuanian: {translation}" if translation else "Translation not found")
+            threading.Thread(target=self._translate_word, args=(word,)).start()
         else:
             messagebox.showerror("Error", "Please enter a word to translate.")
+
+    def _translate_word(self, word):
+        """Actual word translation logic."""
+        translation = self.fetch_translation(word, "en-lt")
+        self.translation_result.config(text=f"Lithuanian: {translation}" if translation else "Translation not found")
 
     def fetch_valid_translation(self):
         """Fetch a valid word and its translation."""
@@ -148,15 +153,16 @@ class LanguageLearningWidget:
                 return word, translation
             else:
                 # If untranslatable, add to list and update display
-                self.untranslatable_words.append(word)
-                self.untranslatable_words_display.insert(tk.END, f"{word}\n")
+                if word not in self.untranslatable_words:
+                    self.untranslatable_words.append(word)
+                    self.untranslatable_words_display.insert('1.0', f"{len(self.untranslatable_words)}. {word}\n")
                 print(f"Skipping untranslatable word: {word}")
 
     def fetch_random_word(self):
         """Fetch a random word from the Random Word API."""
         try:
             response = requests.get(self.WORD_API_URL)
-            return response.json()[0]  # Get the first word from the response
+            return response.json()[0]
         except Exception as e:
             print(f"Error fetching random word: {e}")
             messagebox.showerror("Error", "Unable to fetch word. Please try again later.")
@@ -181,9 +187,9 @@ class LanguageLearningWidget:
             return None
 
     def next_quiz_question(self):
-        """Prepare and display the next quiz question with loading feedback."""
+        """Prepare and display the next quiz question in the background."""
         self.show_loading(True)
-        self.window.after(100, self._next_quiz_question)  # Allow UI update before fetching
+        threading.Thread(target=self._next_quiz_question).start()
 
     def _next_quiz_question(self):
         """Actual quiz fetching logic."""
@@ -213,19 +219,17 @@ class LanguageLearningWidget:
 
     def check_answer(self, index):
         """Check the selected answer against the correct translation."""
-        selected_answer = self.option_buttons[index].cget("text")
+        selected_answer = self.option_buttons[index].cget('text')
         if selected_answer == self.correct_translation:
             self.feedback_label.config(text="Correct!", fg="green")
-            self.score += 1  # Increment the score for correct answer
+            self.score += 1
+            self.score_label.config(text=f"Score: {self.score}")
         else:
-            self.feedback_label.config(text=f"Wrong! Correct answer: {self.correct_translation}", fg="red")
-            self.incorrect_guesses += 1  # Increment incorrect guesses count
+            self.feedback_label.config(text=f"Incorrect! The correct answer was: {self.correct_translation}", fg="red")
+            self.incorrect_guesses += 1
+            self.incorrect_guesses_label.config(text=f"Incorrect: {self.incorrect_guesses}")
 
-        # Update score and incorrect guesses display
-        self.score_label.config(text=f"Score: {self.score}")
-        self.incorrect_guesses_label.config(text=f"Incorrect: {self.incorrect_guesses}")
-
-        # Wait and load the next question
+        # Show next question after a short delay
         self.window.after(2000, self.next_quiz_question)
 
 if __name__ == "__main__":
