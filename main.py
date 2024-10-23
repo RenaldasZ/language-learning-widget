@@ -16,7 +16,7 @@ class LanguageLearningWidget:
         self.window.title("Language Learning Widget: English & Lithuanian")
         self.window.geometry("450x800")
         self.API_KEY = os.getenv('YANDEX_API_KEY') # use Yandex Dictionary Api
-        self.WORD_API_URL = 'https://random-word-api.herokuapp.com/word?number=1'
+        self.WORD_API_URL = 'https://random-word-api.vercel.app/api?words=1'
         self.YANDEX_API_URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}"
 
         # Word lists
