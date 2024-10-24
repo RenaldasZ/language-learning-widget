@@ -21,6 +21,7 @@ class LanguageLearningWidget:
         self.YANDEX_API_URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key={}&lang={}&text={}"
 
         # Word lists
+        self.daily_word = ""
         self.current_word = ""
         self.correct_translation = ""
         self.score = 0  # Initialize score
@@ -108,9 +109,9 @@ class LanguageLearningWidget:
         threading.Thread(target=self._display_daily_word).start()
 
     def _display_daily_word(self):
-        """Actual word fetching logic."""
-        self.current_word, translation = self.fetch_valid_translation()
-        self.window.after(0, lambda: self.word_display.config(text=f"English: {self.current_word}"))
+        """Actual word fetching logic for daily word."""
+        self.daily_word, translation = self.fetch_valid_translation()
+        self.window.after(0, lambda: self.word_display.config(text=f"English: {self.daily_word}"))
         self.window.after(0, lambda: self.translation_display.config(text=f"Lithuanian: {translation}"))
 
     def show_loading(self, is_loading):
