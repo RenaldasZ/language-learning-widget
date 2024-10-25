@@ -24,7 +24,8 @@ class LanguageLearningWidget:
         self.daily_word = ""
         self.current_word = ""
         self.correct_translation = ""
-        self.score = 0  # Initialize score
+        self.score = 0
+        self.life = 3
         self.incorrect_guesses = 0  # Initialize incorrect guesses count
         self.untranslatable_words = []  # List to store skipped/untranslatable words
 
@@ -62,7 +63,7 @@ class LanguageLearningWidget:
         self.feedback_label = self.create_label("", 12, fg="green", pady=5)
 
         # Score and incorrect guesses display
-        self.score_label = self.create_label(f"Score: {self.score}", 14, pady=10)
+        self.score_label = self.create_label(f"Score: {self.score} Life: {self.life}" , 14, pady=10)
         self.incorrect_guesses_label = self.create_label(f"Incorrect: {self.incorrect_guesses}", 14, pady=5)
 
         # Untranslatable words display with a scrollbar
@@ -220,17 +221,39 @@ class LanguageLearningWidget:
     def check_answer(self, index):
         """Check the selected answer against the correct translation."""
         selected_answer = self.option_buttons[index].cget('text')
+        
         if selected_answer == self.correct_translation:
-            self.feedback_label.config(text="Correct!", fg="green")
-            self.score += 1
-            self.score_label.config(text=f"Score: {self.score}")
+            score_increment = self.calculate_score_increment()
+            self.feedback_label.config(text=f"Correct! +{score_increment} points!", fg="green")
+            self.score += score_increment
+            self.score_label.config(text=f"Score: {self.score} Life: {self.life}")
         else:
             self.feedback_label.config(text=f"Incorrect! The correct answer was: {self.correct_translation}", fg="red")
-            self.incorrect_guesses += 1
-            self.incorrect_guesses_label.config(text=f"Incorrect: {self.incorrect_guesses}")
-
+            self.life -= 1
+            self.score_label.config(text=f"Score: {self.score} Life: {self.life}")
+            if self.life <= 0:
+                messagebox.showinfo("Game Over", "You've lost all your lives. Game Over!")
+                self.reset_game()
+        
         # Show next question after a short delay
         self.window.after(0, self.next_quiz_question)
+
+    def calculate_score_increment(self):
+        """Calculate score increment based on current score."""
+        if self.score >= 10:
+            return 2 + (self.score // 10 - 1)  # 10 // 10 - 1 + 2 = 2, 20 // 10 - 1 + 2 = 3, 30 // 10 - 1 + 2 = 4...
+        else:
+            return 1
+
+    def reset_game(self):
+        """Reset the game when the player loses all lives."""
+        self.score = 0
+        self.life = 3
+        self.incorrect_guesses = 0
+        self.score_label.config(text=f"Score: {self.score} Life: {self.life}")
+        self.incorrect_guesses_label.config(text=f"Incorrect: {self.incorrect_guesses}")
+        self.feedback_label.config(text="")
+        self.next_quiz_question()
 
 if __name__ == "__main__":
     root = tk.Tk()
