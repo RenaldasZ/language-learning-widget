@@ -8,6 +8,9 @@ A simple Tkinter-based application designed to help users learn Lithuanian vocab
 - **Translation Tool**: Enter an English word to see its Lithuanian translation.
 - **Quiz Section**: Test your knowledge with multiple-choice questions on Lithuanian translations.
 - **Untranslatable Words Tracker**: Keeps track of words that could not be translated, displayed with a scrollbar.
+- **Score Multiplier**: Increase your score faster by answering more questions correctly.
+- **Life Deduction**: Each incorrect answer deducts a life. Lose all lives, and it's game over!
+- **Game Over Logic**: The game automatically resets when all lives are lost.
 - **Threading for UI Responsiveness**: The app now uses threading to fetch words and translations in the background, preventing UI lag.
 - **Score and Incorrect Guess Tracker**: Displays your current score and tracks incorrect guesses in the quiz.
 
@@ -15,6 +18,8 @@ A simple Tkinter-based application designed to help users learn Lithuanian vocab
 ![](screenshots/1.png)
 ![](screenshots/2.png)
 ![](screenshots/3.png)
+![](screenshots/4.png)
+![](screenshots/5.png)
 
 ## Requirements
 
@@ -54,6 +59,8 @@ pip install requests python-dotenv
 - On startup, the widget will display today's English word and its translation.
 - Enter any English word in the input box and click "Translate to Lithuanian" to see its translation.
 - Participate in the quiz to test your knowledge by selecting the correct Lithuanian translation from the provided options.
+- Each correct answer increases your score, with higher scores boosting the score multiplier.
+- If you select an incorrect answer, a life is deducted. Losing all lives will trigger a game over and reset your progress.
 - If words cannot be translated, they are added to the untranslatable word list.
 
 ## Project Structure
@@ -77,6 +84,7 @@ Renaldas
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ### Changes:
-- Added information about threading for UI responsiveness.
 - Updated the "Features" section to include the new score tracker and threading functionality.
 - Added `python-dotenv` to the requirements.
+- Added: Score Multiplier for additional points on consecutive correct answers.
+- Implemented: Life deduction on incorrect answers, with a game-over reset feature.
